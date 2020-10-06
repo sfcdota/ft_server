@@ -1,0 +1,70 @@
+default-mysql-server
+
+
+
+docker build -t server .
+
+-t flag for naming image
+
+docker run -dit -p 8080:80 -p 443:443 [image id]
+
+docker build -t server . && docker run -dit -p 8080:80 -p 443:443 server && docker container ls
+
+-d for detached run
+-i for Keep STDIN open even if not attached
+-t Allocate a pseudo-tty (work like pseudo physical terminal)
+
+docker exec -it [container id] bash
+
+for doing things into the running docker container shell
+
+
+#To start services#
+
+service nginx start
+
+service php7.3-fpm start
+
+
+############# DOCKERFILE EXAMPLE ####################
+
+FROM debian:buster
+
+LABEL maintainer = "cbach"
+
+WORKDIR /dir/
+
+RUN apt-get update -y
+
+RUN apt-get upgrade -y
+
+RUN apt-get install nginx -y
+
+RUN apt-get install -y \
+	php php-mysql php-fpm \
+	php-curl php-gd php-intl php-mbstring php-soap \
+	php-xml php-xmlrpc php-zip default-mysql-server
+
+COPY ./srcs/ .
+
+EXPOSE 80 443
+
+CMD bash
+
+
+###################################
+
+server {
+        listen 80;
+        listen [::]:80;
+        root /var/www/html/;
+		index index.php index.html index.htm;
+		server_name localhost www.localhost;
+		error_log /var/log/nginx/mysite.com_error.log;
+		access_log /var/log/nginx/mysite.com_access.log;
+		client_max_body_size 100M;
+		location / { try_files $uri $uri/ /index.php?$args; }
+		location ~ \.php$ { include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; }
+		}
