@@ -1,6 +1,6 @@
 default-mysql-server
 
-
+ln -s /etc/nginx/sites-available/localhost /etc/nginx/sites-enabled/localhost
 
 docker build -t server .
 
@@ -24,6 +24,8 @@ for doing things into the running docker container shell
 service nginx start
 
 service php7.3-fpm start
+
+
 
 
 ############# DOCKERFILE EXAMPLE ####################
