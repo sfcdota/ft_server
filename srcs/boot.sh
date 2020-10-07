@@ -1,5 +1,5 @@
 #phpMyAdmin and wordpress from srcs (configured)
-mv -t /var/www/html/ phpmyadmin
+mv -t /var/www/html/ phpMyAdmin
 mv wordpress/* /var/www/html/
 
 
@@ -10,10 +10,12 @@ mv localhost /etc/nginx/sites-available/
 ln -s /etc/nginx/sites-available/localhost /etc/nginx/sites-enabled/localhost
 chown -R www-data /var/www/html/*
 chmod -R 755 /var/www/html/*
-#cp localhost.conf /etc/nginx/conf.d/
+openssl req -x509 -nodes -newkey rsa:2048 \
+-keyout /etc/ssl/certs/localhost.key -out /etc/ssl/certs/localhost.pem \
+-subj "/C=RU/ST=Kazan/L=Kazan/O=21School/OU=cbach/CN=localhost"
+
 
 service mysql start
-
 mysql -u root --skip-password -e "\
 		CREATE DATABASE wordpress;\
 		GRANT ALL PRIVILEGES ON wordpress.* TO 'root'@'localhost';
@@ -22,7 +24,7 @@ mysql -u root --skip-password -e "\
 		EXIT" &
 
 service php7.3-fpm start
-nginx -g 'daemon off;'
+#nginx -g 'daemon off;'
 service nginx start
 
 bash

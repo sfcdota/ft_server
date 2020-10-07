@@ -10,6 +10,10 @@ docker run -dit -p 8080:80 -p 443:443 [image id]
 
 docker build -t server . && docker run -dit -p 8080:80 -p 443:443 server && docker container ls
 
+openssl req -x509 -nodes -newkey rsa:2048 \
+-keyout /etc/ssl/certs/localhost.key -out /etc/ssl/certs/localhost.pem \
+-subj "/C=RU/ST=Kazan/L=Kazan/O=21School/OU=cbach/CN=localhost"
+
 -d for detached run
 -i for Keep STDIN open even if not attached
 -t Allocate a pseudo-tty (work like pseudo physical terminal)
